@@ -70,7 +70,7 @@ def train():
             dataset=train_dataset,
             batch_size=opt.batch_size,
             shuffle=True,
-            num_workers=4,
+            num_workers=2,
             pin_memory=True
         )
     elif opt.train_stage == 1:
@@ -88,7 +88,7 @@ def train():
             dataset=train_dataset,
             batch_size=opt.batch_size,
             shuffle=True,
-            num_workers=4,
+            num_workers=2,
             pin_memory=True
         )
 
