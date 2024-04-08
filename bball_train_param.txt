@@ -1,4 +1,4 @@
---batch_size                4
+--batch_size                2
 --checkpoints_dir           checkpoint
 --ckpt_path                 checkpoint/kpsfr_finetuned.pth
 --custom_worldcup_root      dataset/WorldCup_2014_2018
