@@ -27,6 +27,31 @@ img_directory = os.path.join('dataset', 'ncaa_bball', 'images', video_name_witho
 homography_directory = os.path.join('dataset', 'ncaa_bball', 'annotations', video_name_without_extension)  # corresponding homography matrices will be output as npy here
 print(homography_directory)
 
+# update the train.txt file, which contains all the games that will be used in training
+# in our case were not gonna test the model so we automtically put every game in the train.txt
+train_file_path = homography_directory = os.path.join('dataset', 'ncaa_bball', 'train.txt')
+if os.path.exists(train_file_path):
+    print(f'File {train_file_path} already exists')
+else:
+    with open(train_file_path, 'w') as file:
+        pass
+    print(f"File {train_file_path} created.")
+# now we have to add the game to the txt file
+# Read the file into a list of lines
+with open(train_file_path, 'r') as file:
+    lines = file.readlines()
+
+# Check if the line exists and add it if not
+if video_name_without_extension not in lines:
+    lines.append(video_name_without_extension)
+    # Write the updated list back to the file
+    with open(train_file_path, 'w') as file:
+        file.writelines(lines)
+    print(f'Game {video_name_without_extension} added to {train_file_path}.')
+else:
+    print(f'Game {video_name_without_extension} already in {train_file_path}.')
+
+
 # check whether img and homography folders for this specific video exist
 if not os.path.exists(img_directory):
     os.makedirs(img_directory)
