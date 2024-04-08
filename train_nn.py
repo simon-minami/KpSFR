@@ -11,6 +11,7 @@ from options import CustomOptions
 from models.network import KpSFR
 from worldcup_train_loader import StaticTransformDataset
 from ts_worldcup_train_loader import CustomWorldCupDataset
+from bball_train_loader import CustomBasketballDataset
 
 import torch
 import torch.nn as nn
@@ -78,6 +79,24 @@ def train():
         print('Loading time sequence worldcup data in main training...')
         train_dataset = CustomWorldCupDataset(
             root=opt.custom_worldcup_root,
+            data_type=opt.trainset,
+            mode='train',
+            num_objects=num_objects,
+            noise_trans=opt.noise_trans,
+            noise_rotate=opt.noise_rotate
+        )
+        train_loader = DataLoader(
+            dataset=train_dataset,
+            batch_size=opt.batch_size,
+            shuffle=True,
+            num_workers=2,
+            pin_memory=True
+        )
+    elif opt.train_stage == 2:
+        # Load training data
+        print('Loading ncaa basketball data in main training...')
+        train_dataset = CustomBasketballDataset(
+            root=opt.custom_ncaa_bball_root,
             data_type=opt.trainset,
             mode='train',
             num_objects=num_objects,

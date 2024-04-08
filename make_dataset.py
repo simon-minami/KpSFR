@@ -16,24 +16,29 @@ IMG_HEIGHT = 720
 
 # Reading input video, setting up save directories
 # overarching is dataset/ncaa_bball
+# file structure is dataset/ncaa_bball/annotations or images/game name/.npy (annotations) or .png (images)
 input_video_path = "C:/Users/simon/OneDrive/Desktop/senior ds capstone/video_capstone/20230220_WVU_OklahomaSt.mov"
 video_name = os.path.basename(input_video_path)
 # If you want to remove the file extension as well
 video_name_without_extension = os.path.splitext(video_name)[0]
 
-video_directory = os.path.join('dataset', 'ncaa_bball', video_name_without_extension)
-img_directory = os.path.join(video_directory, 'images')  # images will be output as jpg here
-homography_directory = os.path.join(video_directory, 'annotations')  # corresponding homography matrices will be output as npy here
+# video_directory = os.path.join('dataset', 'ncaa_bball', video_name_without_extension)
+img_directory = os.path.join('dataset', 'ncaa_bball', 'images', video_name_without_extension)  # images will be output as jpg here
+homography_directory = os.path.join('dataset', 'ncaa_bball', 'annotations', video_name_without_extension)  # corresponding homography matrices will be output as npy here
 print(homography_directory)
-if not os.path.exists(video_directory):
-    os.makedirs(video_directory)
-    print(f"Directory '{video_directory}' created.")
+
+# check whether img and homography folders for this specific video exist
+if not os.path.exists(img_directory):
     os.makedirs(img_directory)
     print(f"Directory '{img_directory}' created.")
+else:
+    print(f"Directory '{img_directory}' already exists.")
+if not os.path.exists(homography_directory):
     os.makedirs(homography_directory)
     print(f"Directory '{homography_directory}' created.")
 else:
-    print(f"Directory '{video_directory}' already exists.")
+    print(f"Directory '{homography_directory}' already exists.")
+
 
 
 
@@ -166,7 +171,7 @@ while ret_val:
         # Compute homography here if needed
         homography_matrix, _ = cv2.findHomography(np.array(src_points), np.array(dst_points), cv2.RANSAC, 10)
         print(homography_matrix)
-        img_save_file = f'{img_directory}/frame_{current_frame}.png'
+        img_save_file = f'{img_directory}/frame_{current_frame}.jpg'  # jpg over png to save space
         homo_save_file = f'{homography_directory}/frame_{current_frame}.npy'
         print(f'saving image to: {img_save_file}')
         print(f'saving homography to: {homo_save_file}')

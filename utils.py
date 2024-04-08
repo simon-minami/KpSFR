@@ -114,6 +114,24 @@ def gen_template_grid():
         pts[2] = idx + 1  # keypoints label
     return uniform_grid
 
+def gen_template_grid_bball():
+    # === set uniform grid ===
+    # field_dim_x, field_dim_y = 105.000552, 68.003928 # in meter
+    # field_dim_x, field_dim_y = 114.83, 74.37  # in yard
+    field_dim_x, field_dim_y = 94, 50  # in feet for basketball
+    # field_dim_x, field_dim_y = 115, 74 # in yard
+    nx, ny = (13, 7)
+    x = np.linspace(0, field_dim_x, nx)
+    y = np.linspace(0, field_dim_y, ny)
+    xv, yv = np.meshgrid(x, y, indexing='ij')
+    uniform_grid = np.stack((xv, yv), axis=2).reshape(-1, 2)
+    uniform_grid = np.concatenate((uniform_grid, np.ones(
+        (uniform_grid.shape[0], 1))), axis=1)  # top2bottom, left2right
+    # TODO: class label in template, each keypoints is (x, y, c), c is label that starts from 1
+    for idx, pts in enumerate(uniform_grid):
+        pts[2] = idx + 1  # keypoints label
+    return uniform_grid
+
 
 def gen_im_partial_grid(mode, frame, gt_homo, template, noise_trans, noise_rotate, index):
     # === Warping image and grid for single-frame method ===
