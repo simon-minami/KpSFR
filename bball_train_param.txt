@@ -1,4 +1,3 @@
-# command line parameters for running train_nn.py on bball dataset
 --batch_size                4
 --checkpoints_dir           checkpoint
 --ckpt_path                 checkpoint/kpsfr_finetuned.pth
