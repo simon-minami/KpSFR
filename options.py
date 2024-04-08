@@ -44,6 +44,8 @@ class CustomOptions():
                             default='./dataset/soccer_worldcup_2014/soccer_data', help='data root of public worldcup dataset')
         parser.add_argument('--custom_worldcup_root', type=str,
                             default='./dataset/WorldCup_2014_2018', help='data root of custom worldcup dataset')
+        parser.add_argument('--custom_ncaa_bball_root', type=str,
+                            default='./dataset/dataset/ncaa_bball', help='data root of custom bball dataset')
         parser.add_argument('--template_path', type=str,
                             default='./assets', help='path of worldcup template')
         parser.add_argument('--trainset', type=str,
