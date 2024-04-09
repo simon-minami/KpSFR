@@ -29,7 +29,7 @@ print(homography_directory)
 
 # update the train.txt file, which contains all the games that will be used in training
 # in our case were not gonna test the model so we automtically put every game in the train.txt
-train_file_path = homography_directory = os.path.join('dataset', 'ncaa_bball', 'train.txt')
+train_file_path = os.path.join('dataset', 'ncaa_bball', 'train.txt')
 if os.path.exists(train_file_path):
     print(f'File {train_file_path} already exists')
 else:

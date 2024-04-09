@@ -19,7 +19,7 @@
 --step_size                 30
 --template_path             assets
 --testset                   test
---train_epochs              99
+--train_epochs              100
 --train_lr                  0.0001
 --train_stage               2
 --trainset                  train
