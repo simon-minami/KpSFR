@@ -60,16 +60,28 @@ def infer_homography(eval_model, image, device, template_grid):
 
         return pred_homo
 
-def main():
-    # Setup GPU or CPU
-    # device = torch.device('cuda')
-    device = torch.device('cpu')
-    # Load the model
-    weights_path = 'checkpoint/kpsfr_finetuned.pth'
-    eval_model = EvalKpSFR(model_archi='KC', num_objects=91, non_local=False).to(device)
-    checkpoint = torch.load(weights_path, map_location=device)
+def inference():
+    # Setup GPU
+    os.environ['CUDA_VISIBLE_DEVICES'] = 0
+    print('CUDA Visible Devices: %s' % 0)
+    device = torch.device('cuda:0')
+    print('device: %s' % device)
+
+
+    num_classes = 92
+    # num_objects = opt.num_objects
+    num_objects = 91
+    non_local = bool(1)
+    model_archi = 'KC'
+    # Initialize models
+    eval_model = EvalKpSFR(model_archi=model_archi,
+                           num_objects=num_objects, non_local=non_local).to(device)
+
+    load_weights_path = 'checkpoint/kpsfr_finetuned.pth'
+    print('Loading weights: ', load_weights_path)
+    assert osp.isfile(load_weights_path), 'Error: no checkpoints found'
+    checkpoint = torch.load(load_weights_path, map_location=device)
     eval_model.load_state_dict(checkpoint['model_state_dict'])
-    eval_model.eval()
     return
 
     # Load the input image
@@ -83,5 +95,15 @@ def main():
     predicted_homography = infer_homography(eval_model, input_tensor, device, template_grid)
     print("Predicted Homography:", predicted_homography)
 
+def main():
+
+    inference()
+    # writer.flush()
+    # writer.close()
+
+
 if __name__ == '__main__':
+
+    start_time = time.time()
     main()
+    print(f'Done...Take {(time.time() - start_time):.4f} (sec)')
