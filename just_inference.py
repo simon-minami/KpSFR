@@ -63,9 +63,7 @@ def infer_homography(eval_model, image, device, template_grid):
 
 def inference():
     # Setup GPU
-    os.environ['CUDA_VISIBLE_DEVICES'] = 0
-    print('CUDA Visible Devices: %s' % 0)
-    device = torch.device('cuda:0')
+    device = torch.device('cuda')
     print('device: %s' % device)
 
 
@@ -83,6 +81,7 @@ def inference():
     assert osp.isfile(load_weights_path), 'Error: no checkpoints found'
     checkpoint = torch.load(load_weights_path, map_location=device)
     eval_model.load_state_dict(checkpoint['model_state_dict'])
+    eval_model.eval()
     return
 
     # Load the input image
@@ -99,8 +98,7 @@ def inference():
 def main():
 
     inference()
-    # writer.flush()
-    # writer.close()
+
 
 
 if __name__ == '__main__':
