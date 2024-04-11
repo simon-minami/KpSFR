@@ -110,7 +110,7 @@ def inference():
 
     eval_model.eval()
     with torch.no_grad():
-        processor = InferenceCore(eval_model, image_tensor, device, k=num_objects)
+        processor = InferenceCore(eval_model, image_tensor, device, num_objects)
         processor.interact(0, 1) #running on just one frame
 
     print('hi')
