@@ -101,6 +101,7 @@ def inference():
     image_tensor = image_tensor.unsqueeze(1)  # Add numframes dimensoin
     print(f'image after unsqeeze: {image_tensor.size()}')
 
+    # shape should now be [1, 1, channels, height, width]
     # Predict homography
     # I should be able to use the given postprocessing function in the original inference.py
 
