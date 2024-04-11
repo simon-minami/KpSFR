@@ -96,10 +96,9 @@ def inference():
     print(f'image after opening: {np.array(image).shape}')
     image_tensor = preprocess(image).to(device)
     print(f'image before unsqeeze: {image_tensor.size()}')
-    image_tensor = image_tensor.unsqueeze(0)  # Add batch dimension
+
+    image_tensor = image_tensor.unsqueeze(0).unsqeeze(0)  # Add batch and frame dimensions: [1, 1, channels, height, width]
     print(f'image after unsqeeze: {image_tensor.size()}')
-    # image_tensor = image_tensor.unsqueeze(1)  # Add numframes dimensoin
-    # print(f'image after unsqeeze: {image_tensor.size()}')
 
     # shape should now be [1, 1, channels, height, width]
     # Predict homography
@@ -130,7 +129,6 @@ def inference():
     #
     # # Infer the homography
     # predicted_homography = infer_homography(model, input_tensor, device, template_grid)
-    print("Predicted Homography:", predicted_homography)
 
 
 def main():
