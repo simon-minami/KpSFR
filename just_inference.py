@@ -102,6 +102,10 @@ def inference():
     # Predict homography
     # I should be able to use the given postprocessing function in the original inference.py
 
+    ##TEST
+    print(image_tensor[:, 0])
+    print(image_tensor[:, 0].size())
+
     model.eval()
     # Set up InferenceCore and perform inference
     inference_core = InferenceCore(model, image_tensor, device, num_objects)
