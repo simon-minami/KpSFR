@@ -17,6 +17,7 @@ import utils
 from models.inference_core import InferenceCore
 import cv2
 import time
+from torchvision import transforms
 
 
 
@@ -82,17 +83,45 @@ def inference():
     checkpoint = torch.load(load_weights_path, map_location=device)
     eval_model.load_state_dict(checkpoint['model_state_dict'])
     eval_model.eval()
+
+    # Preprocess the image (same procedure as ts_worldcup_test_loader.py)
+    preprocess = transforms.Compose([
+        transforms.Resize((720, 1280)),  # Resize to match the dimensions used in training
+        transforms.ToTensor(),  # Convert to tensor
+        transforms.Normalize([0.485, 0.456, 0.406], [0.229, 0.224, 0.225])  # Normalize (ImageNet statistics)
+    ])
+
+    # Load and preprocess the image
+    input_image_path = 'dataset/ncaa_bball/images/20230220_WVU_OklahomaSt/frame_1.jpg'
+    image = Image.open(input_image_path)
+    image_tensor = preprocess(image).to(device)
+    image_tensor = image_tensor.unsqueeze(0)  # Add batch dimension
+
+
+    # Predict homography
+    # I should be able to use the given postprocessing function in the original inference.py
+
+
+
+
+
+    eval_model.eval()
+    with torch.no_grad():
+        processor = InferenceCore(eval_model, image, device, k=num_objects)
+        processor.interact(0, 1) #running on just one frame
+
+    print('hi')
     return
 
-    # Load the input image
-    input_image = Image.open('path_to_input_image.jpg')
-    input_tensor = utils.im_to_torch(input_image).unsqueeze(0).to(device)
-
-    # Generate the template grid
-    template_grid = utils.gen_template_grid_bball()
-
-    # Infer the homography
-    predicted_homography = infer_homography(eval_model, input_tensor, device, template_grid)
+    # # Load the input image
+    # input_image = Image.open('path_to_input_image.jpg')
+    # input_tensor = utils.im_to_torch(input_image).unsqueeze(0).to(device)
+    #
+    # # Generate the template grid
+    # template_grid = utils.gen_template_grid_bball()
+    #
+    # # Infer the homography
+    # predicted_homography = infer_homography(eval_model, input_tensor, device, template_grid)
     print("Predicted Homography:", predicted_homography)
 
 def main():
