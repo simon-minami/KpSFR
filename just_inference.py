@@ -5,20 +5,18 @@ evaluation as well which we can't do with bball)
 want to have input: image -> output: predicted homography matrix
 '''
 
-
-
 import torch
 import os
 import os.path as osp
 import numpy as np
 from PIL import Image
 from models.eval_network import EvalKpSFR
+from models.network import KpSFR
 import utils
 from models.inference_core import InferenceCore
 import cv2
 import time
 from torchvision import transforms
-
 
 
 def class_mapping(rgb, template):
@@ -32,9 +30,10 @@ def class_mapping(rgb, template):
 
     return src_pts[:, :2], dst_pts[:, :2]
 
-def infer_homography(eval_model, image, device, template_grid):
+
+def infer_homography(model, image, device, template_grid):
     with torch.no_grad():
-        processor = InferenceCore(eval_model, image, device, k=91, lookup=None)
+        processor = InferenceCore(model, image, device, k=91, lookup=None)
         processor.interact(0, image.shape[1], selector=None)
 
         out_masks = processor.prob[:, 0]  # Assuming single frame input
@@ -62,11 +61,11 @@ def infer_homography(eval_model, image, device, template_grid):
 
         return pred_homo
 
+
 def inference():
     # Setup GPU
     device = torch.device('cuda')
     print('device: %s' % device)
-
 
     num_classes = 92
     # num_objects = opt.num_objects
@@ -74,15 +73,15 @@ def inference():
     non_local = bool(1)
     model_archi = 'KC'
     # Initialize models
-    eval_model = EvalKpSFR(model_archi=model_archi,
-                           num_objects=num_objects, non_local=non_local).to(device)
+    model = KpSFR(model_archi=model_archi,
+                  num_objects=num_objects, non_local=non_local).to(device)
 
     load_weights_path = 'checkpoint/kpsfr_finetuned.pth'
     print('Loading weights: ', load_weights_path)
     assert osp.isfile(load_weights_path), 'Error: no checkpoints found'
     checkpoint = torch.load(load_weights_path, map_location=device)
-    eval_model.load_state_dict(checkpoint['model_state_dict'])
-    eval_model.eval()
+    model.load_state_dict(checkpoint['model_state_dict'])
+    model.eval()
 
     # Preprocess the image (same procedure as ts_worldcup_test_loader.py)
     preprocess = transforms.Compose([
@@ -100,20 +99,14 @@ def inference():
     image_tensor = image_tensor.unsqueeze(0)  # Add batch dimension
     print(f'image after sqeeze: {image_tensor.size()}')
 
-
-
     # Predict homography
     # I should be able to use the given postprocessing function in the original inference.py
 
-
-
-
-
-    eval_model.eval()
+    model.eval()
     with torch.no_grad():
-        output = eval_model(image_tensor)
+        output = model(image_tensor)
         print(output)
-        # processor = InferenceCore(eval_model, image_tensor, device, num_objects)
+        # processor = InferenceCore(model, image_tensor, device, num_objects)
         # processor.interact(0, 1) #running on just one frame
 
     print('hi')
@@ -127,17 +120,15 @@ def inference():
     # template_grid = utils.gen_template_grid_bball()
     #
     # # Infer the homography
-    # predicted_homography = infer_homography(eval_model, input_tensor, device, template_grid)
+    # predicted_homography = infer_homography(model, input_tensor, device, template_grid)
     print("Predicted Homography:", predicted_homography)
 
-def main():
 
+def main():
     inference()
 
 
-
 if __name__ == '__main__':
-
     start_time = time.time()
     main()
     print(f'Done...Take {(time.time() - start_time):.4f} (sec)')
