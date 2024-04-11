@@ -95,7 +95,10 @@ def inference():
     input_image_path = 'dataset/ncaa_bball/images/20230220_WVU_OklahomaSt/frame_1.jpg'
     image = Image.open(input_image_path)
     image_tensor = preprocess(image).to(device)
+    print(f'image before sqeeze: {image_tensor.size()}')
     image_tensor = image_tensor.unsqueeze(0)  # Add batch dimension
+    print(f'image after sqeeze: {image_tensor.size()}')
+
 
 
     # Predict homography
@@ -107,7 +110,7 @@ def inference():
 
     eval_model.eval()
     with torch.no_grad():
-        processor = InferenceCore(eval_model, image, device, k=num_objects)
+        processor = InferenceCore(eval_model, image_tensor, device, k=num_objects)
         processor.interact(0, 1) #running on just one frame
 
     print('hi')
