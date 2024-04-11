@@ -73,7 +73,7 @@ def inference():
     non_local = bool(1)
     model_archi = 'KC'
     # Initialize models
-    model = EvalKpSFR(model_archi=model_archi,
+    model = KpSFR(model_archi=model_archi,
                   num_objects=num_objects, non_local=non_local).to(device)
 
     load_weights_path = 'checkpoint/kpsfr_finetuned.pth'
