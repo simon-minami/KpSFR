@@ -97,7 +97,7 @@ def inference():
     image_tensor = preprocess(image).to(device)
     print(f'image before unsqeeze: {image_tensor.size()}')
 
-    image_tensor = image_tensor.unsqueeze(0).unsqeeze(0)  # Add batch and frame dimensions: [1, 1, channels, height, width]
+    image_tensor = image_tensor.unsqueeze(0).unsqueeze(0)  # Add batch and frame dimensions: [1, 1, channels, height, width]
     print(f'image after unsqeeze: {image_tensor.size()}')
 
     # shape should now be [1, 1, channels, height, width]
