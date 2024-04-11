@@ -98,8 +98,8 @@ def inference():
     print(f'image before unsqeeze: {image_tensor.size()}')
     image_tensor = image_tensor.unsqueeze(0)  # Add batch dimension
     print(f'image after unsqeeze: {image_tensor.size()}')
-    image_tensor = image_tensor.unsqueeze(1)  # Add numframes dimensoin
-    print(f'image after unsqeeze: {image_tensor.size()}')
+    # image_tensor = image_tensor.unsqueeze(1)  # Add numframes dimensoin
+    # print(f'image after unsqeeze: {image_tensor.size()}')
 
     # shape should now be [1, 1, channels, height, width]
     # Predict homography
@@ -110,14 +110,13 @@ def inference():
     print(image_tensor[:, 0].size())
 
     model.eval()
-    # Set up InferenceCore and perform inference
-    inference_core = InferenceCore(model, image_tensor, device, num_objects)
+    # Encode key features and segment the image
     with torch.no_grad():
-        inference_core.interact(0, 1)  # Assuming you want to process a single frame
+        f32, f16, f8, f4 = model.encode_key(image_tensor)  # Add batch dimension
+        predicted_heatmaps = model.segment(f32, f16, f8, f4, k=91,
+                                           qcls=None)  # qcls can be None or based on your implementation
 
-    # The segmentation results (keypoint heatmaps) are stored in inference_core.prob
-    keypoint_heatmaps = inference_core.prob.cpu().numpy()
-    print(keypoint_heatmaps)
+    predicted_heatmaps(len(predicted_heatmaps), predicted_heatmaps)
 
     print('hi')
     return
