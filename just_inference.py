@@ -95,9 +95,11 @@ def inference():
     image = Image.open(input_image_path)
     print(f'image after opening: {np.array(image).shape}')
     image_tensor = preprocess(image).to(device)
-    print(f'image before sqeeze: {image_tensor.size()}')
+    print(f'image before unsqeeze: {image_tensor.size()}')
     image_tensor = image_tensor.unsqueeze(0)  # Add batch dimension
-    print(f'image after sqeeze: {image_tensor.size()}')
+    print(f'image after unsqeeze: {image_tensor.size()}')
+    image_tensor = image_tensor.unsqueeze(1)  # Add numframes dimensoin
+    print(f'image after unsqeeze: {image_tensor.size()}')
 
     # Predict homography
     # I should be able to use the given postprocessing function in the original inference.py
