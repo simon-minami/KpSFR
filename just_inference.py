@@ -86,7 +86,7 @@ def inference():
 
     # Preprocess the image (same procedure as ts_worldcup_test_loader.py)
     preprocess = transforms.Compose([
-        transforms.Resize((720, 1280)),  # Resize to match the dimensions used in training
+        # transforms.Resize((720, 1280)),  # Resize to match the dimensions used in training
         transforms.ToTensor(),  # Convert to tensor
         transforms.Normalize([0.485, 0.456, 0.406], [0.229, 0.224, 0.225])  # Normalize (ImageNet statistics)
     ])
@@ -94,6 +94,7 @@ def inference():
     # Load and preprocess the image
     input_image_path = 'dataset/ncaa_bball/images/20230220_WVU_OklahomaSt/frame_1.jpg'
     image = Image.open(input_image_path)
+    print(f'image after opening: {np.array(image).shape}')
     image_tensor = preprocess(image).to(device)
     print(f'image before sqeeze: {image_tensor.size()}')
     image_tensor = image_tensor.unsqueeze(0)  # Add batch dimension
@@ -110,8 +111,10 @@ def inference():
 
     eval_model.eval()
     with torch.no_grad():
-        processor = InferenceCore(eval_model, image_tensor, device, num_objects)
-        processor.interact(0, 1) #running on just one frame
+        output = eval_model(image_tensor)
+        print(output)
+        # processor = InferenceCore(eval_model, image_tensor, device, num_objects)
+        # processor.interact(0, 1) #running on just one frame
 
     print('hi')
     return
