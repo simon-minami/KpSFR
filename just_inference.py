@@ -73,7 +73,7 @@ def inference():
     non_local = bool(1)
     model_archi = 'KC'
     # Initialize models
-    model = KpSFR(model_archi=model_archi,
+    model = EvalKpSFR(model_archi=model_archi,
                   num_objects=num_objects, non_local=non_local).to(device)
 
     load_weights_path = 'checkpoint/kpsfr_finetuned.pth'
@@ -103,11 +103,14 @@ def inference():
     # I should be able to use the given postprocessing function in the original inference.py
 
     model.eval()
+    # Set up InferenceCore and perform inference
+    inference_core = InferenceCore(model, image_tensor, device, num_objects)
     with torch.no_grad():
-        output = model(image_tensor)
-        print(output)
-        # processor = InferenceCore(model, image_tensor, device, num_objects)
-        # processor.interact(0, 1) #running on just one frame
+        inference_core.interact(0, 1)  # Assuming you want to process a single frame
+
+    # The segmentation results (keypoint heatmaps) are stored in inference_core.prob
+    keypoint_heatmaps = inference_core.prob.cpu().numpy()
+    print(keypoint_heatmaps)
 
     print('hi')
     return
