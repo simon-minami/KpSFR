@@ -112,6 +112,9 @@ def inference():
     # Encode key features and segment the image
     with torch.no_grad():
         f32, f16, f8, f4 = model.encode_key(image_tensor)  # Add batch dimension
+
+        #TODO: fix qcls error, pretty sure its the look up thing, check train_nn line 246, and the \
+        # lookup initialization in bball train loader
         predicted_heatmaps = model.segment(f32, f16, f8, f4, k=91,
                                            qcls=None)  # qcls can be None or based on your implementation
 
